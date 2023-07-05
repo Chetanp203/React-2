@@ -3,12 +3,14 @@ import Navbar from './Components/Navbar'
 import {Routes,Route} from 'react-router-dom'
 import Home from './Components/Home'
 import Footer from './Components/Footer'
+import MensWear from './Components/MensWear'
 
 export const App = () => {
   return (
     <div>
       <Navbar/>
       <Routes>
+        <Route exact path='/menswear' element={<MensWear/>}/>
         <Route path='/' element={<Home/>}/>
       </Routes>
       <Footer/>
