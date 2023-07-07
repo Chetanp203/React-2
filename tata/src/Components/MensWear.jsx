@@ -1,7 +1,13 @@
 import React from 'react'
 import './MensWear.css'
+import { useNavigate } from 'react-router-dom'
 
 const MensWear = () => {
+    const router = useNavigate();
+
+    function goto(){
+        router('/menstshirt')
+    }
     return (
         <div>
 
@@ -11,7 +17,7 @@ const MensWear = () => {
 
             <div className="categories">
                 <div>
-                    <img src="https://assets.tatacliq.com/medias/sys_master/images/47396042702878.jpg" />
+                    <img onClick={goto} src="https://assets.tatacliq.com/medias/sys_master/images/47396042702878.jpg" />
                 </div>
                 <div>
                     <img src="https://assets.tatacliq.com/medias/sys_master/images/47396042768414.jpg" />

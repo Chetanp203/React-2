@@ -1,7 +1,13 @@
 import React from 'react'
 import "./Home.css"
+import { useNavigate } from 'react-router-dom'
 
 export const Home = () => {
+  const router = useNavigate();
+
+  function goto(){
+    router('/menswear')
+  }
   return (
     <div>
       {/* ***********Banner */}
@@ -21,7 +27,7 @@ export const Home = () => {
           <img src="https://assets.tatacliq.com/medias/sys_master/images/47445466152990.jpg" />
         </div>
         <div>
-          <img src="https://assets.tatacliq.com/medias/sys_master/images/47445466218526.jpg" />
+          <img onClick={goto} src="https://assets.tatacliq.com/medias/sys_master/images/47445466218526.jpg" />
         </div>
         <div>
           <img src="https://assets.tatacliq.com/medias/sys_master/images/47575793303582.jpg" />
