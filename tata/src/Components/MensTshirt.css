@@ -89,7 +89,7 @@
 
 .right{
     width: 70%;
-    height: 1800px;
+    /* height: 1800px; */
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
