@@ -7,12 +7,14 @@ import MensWear from './Components/MensWear'
 import MensTshirt from './Components/MensTshirt'
 import SingleProduct from './Components/SingleProduct'
 import Profile from './Components/Profile'
+import Bag from './Components/Bag'
 
 export const App = () => {
   return (
     <div>
       <Navbar/>
       <Routes>
+        <Route exact path='/bag' element={<Bag/>} />
         <Route exact path='/profile' element={<Profile/>}/>
         <Route exact path='/singleproduct' element={<SingleProduct/>}/>
         <Route exact path='/menstshirt' element={<MensTshirt/>}/>

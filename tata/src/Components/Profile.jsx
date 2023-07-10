@@ -118,9 +118,9 @@ const Profile = () => {
 
 
         <div className="right2">
-            <button>C</button>
-            <h3>Chetan Patil</h3>
-            <span>0 <span style={{fontSize:12}}>NeuCoins</span></span>
+            <button style={{marginLeft:65}}>C</button>
+            <h3 style={{paddingLeft:50}}>Chetan Patil</h3>
+            <span style={{paddingLeft:70}}>0 <span style={{fontSize:10}}>NeuCoins</span></span>
             <p>patil.chetan1994@gmail.com</p>
         </div>
 
