@@ -12,11 +12,48 @@
     justify-content: space-between;
     background-color: rgb(33,33,33);
     align-items: center;
+    position: relative;
 }
 .nav img{
     width: 70px;
     height: 40px;
     margin-left: 90px;
+}
+.category-drop{
+    width: 90%;
+    display: flex;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    visibility: hidden;
+}
+.cat-left{
+width: 20%;
+padding: 10px;
+}
+.cat-left ul li{
+    list-style: none;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    font-weight: bold;
+
+}
+.cat-left ul li:hover{
+    color: rgb(228, 44, 105);
+    cursor: pointer;
+}
+.cat-right{
+    width: 80%;
+    display: flex;
+    padding: 10px;
+    justify-content: space-around;
+}
+.cat-right ul li{
+    padding: 2.5px;
+}
+.cat-right ul li:hover{
+    color: rgb(228, 44, 105);
+    cursor: pointer;
 }
 .nav-in{
     width: 80%;
