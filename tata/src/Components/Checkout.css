@@ -1,0 +1,36 @@
+.c-container{
+    width: 100%;
+    background-color: #ccc;
+    padding: 20px 60px;
+}
+.in-con{
+    display: flex;
+    width: 99%;
+    /* border: 1px solid red; */
+    justify-content: space-between;
+    background-color: white;
+    border-radius: 5px;
+}
+.c-left{
+    width: 70%;
+    /* border: 1px solid blue; */
+    padding: 15px;
+}
+
+.c-right{
+    width: 28%;
+    /* border: 1px solid blue; */
+}
+.one-l{
+    width: 50%;
+}
+.one-r{
+    width: 50%;
+}
+.ship{
+    width: 95%;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}

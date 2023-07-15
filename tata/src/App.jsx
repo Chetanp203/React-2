@@ -15,12 +15,14 @@ import Beauty from './Components/Beauty'
 import Gadgets from './Components/Gadgets'
 import Jewellery from './Components/Jewellery'
 import Acceccories from './Components/Acceccories'
+import Checkout from './Components/Checkout'
 
 export const App = () => {
   return (
     <div>
       <Navbar/>
       <Routes>
+        <Route exact path='checkout' element={<Checkout/>}/>
         <Route exact path='accessories' element={<Acceccories/>}/>
         <Route exact path='jewellery' element={<Jewellery/>}/>
         <Route exact path='gadgets' element={<Gadgets/>}/>
