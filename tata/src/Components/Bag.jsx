@@ -1,7 +1,84 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import "./Bag.css"
+import { useContext } from 'react';
+import { AuthContext } from '../Context/Auth.context';
+import { useNavigate } from 'react-router-dom';
 
 const Bag = () => {
+    const [cartProd, setCartProd] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const { state } = useContext(AuthContext);
+  const route = useNavigate();
+
+  // console.log(state);
+
+  useEffect(() => {
+    const currentuser = JSON.parse(localStorage.getItem("Current-user"));
+
+    if (state?.user?.role === "Seller") {
+      route("/");
+    }
+  }, []);
+
+  useEffect(() => {
+    const currentuser = JSON.parse(localStorage.getItem("Current-user"));
+    const regusers = JSON.parse(localStorage.getItem("Users"));
+
+    if (state?.user && state?.user?.role === "Buyer" ) {
+      for (let i = 0; i < regusers.length; i++) {
+        if (regusers[i].email === currentuser.email ) {
+          setCartProd(regusers[i].cart);
+        }
+      }
+    }
+  }, [state]);
+
+  useEffect(() => {
+    if (cartProd.length) {
+    }
+    let sum = 0;
+    for (let i = 0; i < cartProd.length; i++) {
+      sum += parseInt(cartProd[i].price);
+      // console.log(sum);
+    }
+    setTotalPrice(sum);
+  }, [cartProd]);
+
+  const removeSingleProduct = (id) => {
+    const currentuser = JSON.parse(localStorage.getItem("Current-user"));
+    const regusers = JSON.parse(localStorage.getItem("Users"));
+    const filterItem = cartProd.filter((item) => item.id != id);
+
+    if (state?.user && state?.user?.role === "Buyer") {
+      for (let i = 0; i < regusers.length; i++) {
+        if (regusers[i].email === currentuser.email) {
+          regusers[i].cart = filterItem;
+          localStorage.setItem("Users", JSON.stringify(regusers));
+          setCartProd(filterItem);
+          // setTotalPrice(0);
+          alert("Product removed");
+        }
+      }
+    }
+  };
+
+  const checkOut = () => {
+    const currentuser = JSON.parse(localStorage.getItem("Current-user"));
+    const regusers = JSON.parse(localStorage.getItem("Users"));
+
+    if (state?.user && state?.user?.role === "Buyer") {
+      for (let i = 0; i < regusers.length; i++) {
+        if (regusers[i].email === currentuser.email) {
+          regusers[i].cart = [];
+          localStorage.setItem("Users", JSON.stringify(regusers));
+          setCartProd([]);
+          setTotalPrice(0);
+          alert("Product will Deliver Soon");
+        }
+      }
+    }
+  };
+
     return (
         <div className='b-container'>
 
@@ -23,17 +100,18 @@ const Bag = () => {
                         <div className='cong'>
                             <p className="green">Congratulations NeuPass User!! Your order is eligible for <b>Free Shipping!</b></p>
                         </div>
-
-                        <div className="flex save-wish" style={{ fontSize: 14, lineHeight: 2 }}>
-                            <img src="https://img.tatacliq.com/images/i9/437Wx649H/MP000000016373929_437Wx649H_202302042021191.jpeg" className='bag-pro' />
+                       {cartProd.map((pro) => (
+                        <div className="flex save-wish" style={{ fontSize: 14, lineHeight: 2 }} key={pro.id}>
+                            <img src={pro.image} className='bag-pro' />
 
                             <div style={{ padding: 10 }}>
+                                
                                 <div className='flex'>
-                                    <p>Puma ESS+ Black Cotton Regular Fit Printed T-shirt</p>
+                                    <p>{pro.title}</p>
                                     <img src="https://www.tatacliq.com/src/general/components/img/deliveryIcon.svg" className='del-icon' />
                                     <p>Delivery by <b>15th Jul</b> <span className='green' ><b >FREE</b></span></p>
                                 </div>
-                                <span><b>₹739.</b><del>₹1999</del><span className='green'><b>₹1260.00 Off</b></span>
+                                <span><b>₹{pro.price}</b><del>₹{pro.price}</del><span className='green'><b>₹1260.00 Off</b></span>
 
                                 </span>
                                 <p>Color:Ivory</p>
@@ -44,38 +122,15 @@ const Bag = () => {
                                     <p>Quantity:1</p>
                                     <div className="flex space ">
                                         <p style={{ paddingRight: 30 }} >Save to wishlist</p>
-                                        <p>Remove </p>
+                                        <p onClick={()=> removeSingleProduct(pro.id)}>Remove </p>
                                     </div>
                                 </div>
                             </div>
 
                         </div>
+                        ))}
 
 
-                        <div className="flex save-wish" style={{ fontSize: 14, lineHeight: 2 }}>
-                            <img src="https://img.tatacliq.com/images/i10/437Wx649H/MP000000016645596_437Wx649H_202302241106111.jpeg" className='bag-pro' />
-
-                            <div style={{ padding: 10 }}>
-                                <div className='flex'>
-                                    <p>U.S.Polo Assn. Ivory Cotton Regular Fit Polo T-shirt</p>
-                                    <img src="https://www.tatacliq.com/src/general/components/img/deliveryIcon.svg" className='del-icon' />
-                                    <p>Delivery by <b>16th Jul </b><span className='green' ><b >FREE</b></span></p>
-                                </div>
-                                <p><b>₹1899.00</b></p>
-                                <p>Color:Black</p>
-                                <br />
-                                <br />
-                                <hr />
-                                <div className="flex space" style={{ padding: 15 }}>
-                                    <p>Quantity:1</p>
-                                    <div className="flex space ">
-                                        <p style={{ paddingRight: 30 }}>Save to wishlist</p>
-                                        <p>Remove </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
 
                         <button>Continue Shopping</button>
 
@@ -92,7 +147,7 @@ const Bag = () => {
                             <div className='check2'>
                                 <div className='space flex'>
                                     <p>Bag Total</p>
-                                    <p>₹3898.00</p>
+                                    <p>₹{totalPrice}</p>
                                 </div>
                                 <div className='space flex'>
                                     <p>Shippin Charge</p>
@@ -100,7 +155,7 @@ const Bag = () => {
                                 </div>
                                 <div className='space flex'>
                                     <p>Bag Subtotal</p>
-                                    <p>₹3898.00</p>
+                                    <p>₹{totalPrice}</p>
                                 </div>
                                 <div className='space flex'>
                                     <p>Product Discount(s)</p>
@@ -113,9 +168,9 @@ const Bag = () => {
                             <div className="check3 flex space">
                                 <div>
                                     <p><b>Total</b></p>
-                                    <p><b>₹2638</b></p>
+                                    <p><b>₹{totalPrice}</b></p>
                                 </div>
-                                <button>Checkout</button>
+                                <button onClick={checkOut}>Checkout</button>
                             </div>
                         </div>
 

@@ -1,421 +1,246 @@
-import React from 'react'
-import "./SingleProduct.css"
+import React, { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../Context/Auth.context";
+import "./../Components/SingleProduct.css"
 
 const SingleProduct = () => {
+    const { id } = useParams();
+    const [singleProduct, setSingleProduct] = useState({});
+    const [updateProdContainer, setUpdateProdContainer] = useState(false);
+
+    const { state } = useContext(AuthContext);
+    const route = useNavigate();
+
+    // console.log(singleProduct);
+
+    useEffect(() => {
+        const getProduct = JSON.parse(localStorage.getItem("Products"));
+
+        if (getProduct) {
+            let prodId = getProduct.find((item) => item.id === id);
+            setSingleProduct(prodId);
+        }
+    }, []);
+
+    const addToCart = (id) => {
+        const regUser = JSON.parse(localStorage.getItem("Users"));
+
+        if (state?.user) {
+            for (let i = 0; i < regUser.length; i++) {
+                if (regUser[i].email === state.user.email) {
+                    const duplicate = regUser[i].cart.find((e) => e.id === id);
+
+                    // console.log(duplicate);
+                    // Do not add Duplicate items
+                    if (regUser[i].cart.length && duplicate) {
+                        toast("product already added");
+                        route("/cart");
+                    } else {
+                        regUser[i].cart.push(singleProduct);
+                        localStorage.setItem("Users", JSON.stringify(regUser));
+                        alert("product added");
+                        route("/all-products");
+                    }
+                }
+            }
+        }
+    };
+
+    const updateProductDetails = () => {
+        setUpdateProdContainer(true);
+    };
+
+    const closeUpdateProdContainer = () => {
+        setUpdateProdContainer(false);
+    };
+
+    function changeProdDetails(e) {
+        const name = e.target.name;
+        const value = e.target.value;
+
+        setSingleProduct({ ...singleProduct, [name]: value });
+    }
+
+    const changeProdDetailsCategory = (e) => {
+        const value = e.target.value;
+        setSingleProduct({ ...singleProduct, ["category"]: value });
+    };
+
+    function handleSubmitProductUpdate(e) {
+        e.preventDefault();
+
+        const getProduct = JSON.parse(localStorage.getItem("Products"));
+        //eslint
+        for (let i = 0; i < getProduct.length; i++) {
+            if (getProduct[i].id === id) {
+                getProduct[i].image = singleProduct.image;
+                getProduct[i].title = singleProduct.title;
+                getProduct[i].price = singleProduct.price;
+                getProduct[i].category = singleProduct.category;
+
+                localStorage.setItem("products", JSON.stringify(getProduct));
+                alert("updated success");
+                setUpdateProdContainer(false);
+            }
+        }
+    }
+
     return (
-        <div className='body'>
-            <div className="container">
-                <div className="left">
+        <div>
 
-                    <div className="flex big">
-                        <img src="https://img.tatacliq.com/images/i10/437Wx649H/MP000000016645596_437Wx649H_202302241106111.jpeg" />
-
-                        <img src="https://img.tatacliq.com/images/i10/437Wx649H/MP000000016645596_437Wx649H_202302241106132.jpeg" />
-
+            <div style={{ display: "flex", marginTop: "2%" }}>
+                <div style={{ width: "60%" }}>
+                    <div style={{ width: "100%", margin: "auto",display:'flex',flexWrap:'wrap',justifyContent:'space-around' }}>
+                        <img width="45%" src={singleProduct.image} style={{borderRadius:'10px',margin:'10px'}} />
+                        <img width="45%" src={singleProduct.image} style={{borderRadius:'10px',margin:'10px'}} />
+                        <img width="30%" src={singleProduct.image} style={{borderRadius:'10px',margin:'10px'}} />
+                        <img width="30%" src={singleProduct.image} style={{borderRadius:'10px',margin:'10px'}} />
+                        <img width="30%" src={singleProduct.image} style={{borderRadius:'10px',margin:'10px'}} />
                     </div>
-
-                    <div className="flex small">
-                        <img src="https://img.tatacliq.com/images/i10/437Wx649H/MP000000016645596_437Wx649H_202302241106083.jpeg" />
-                        <img src="https://img.tatacliq.com/images/i10/437Wx649H/MP000000016645596_437Wx649H_202302241106154.jpeg" />
-                        <img src="https://img.tatacliq.com/images/i10/437Wx649H/MP000000016645596_437Wx649H_202302241106105.jpeg" />
-
-
-                    </div>
-
                 </div>
 
-
-
-
-                <div className="right1">
-
-                    <div className='popular'>
-                        <p>Popular:Recently wishlisted 55 times</p>
-                    </div>
-                    <h3>Puma</h3>
-                    <p>Puma Ess+ Black Cotton Regular Fit Printed T-Shirt</p>
-                    <div className="flex">
-                        <h3>₹739</h3>
-                        <p>MRP:<del>₹1999</del><b className='green'>63% Off</b></p>
-                    </div>
-                    <p>inclusive of all taxes</p>
-                    <p className="pink">Use MENSEOSS coupon to get 10% off on cart value 1999/- and above.</p>
-                    <p className='pink'>Share your opinion</p>
+                <div style={{ width: "35%" }}>
+                    <p style={{fontSize:'25px'}}><b>{singleProduct.title}</b></p>
+                    <br />
+                    <p >{singleProduct.description}</p>
+                    <br />
+                    <h1 style={{fontSize:'25px'}}><b>Rs.{singleProduct.price}</b></h1>
+                    <p><strike>Rs {singleProduct.price}</strike></p>
+                    <br />
+                    <p>Inclusive of all taxes</p>
+                    <h3>{singleProduct.category}</h3>
                     <br />
                     <hr />
-                    <br />
-                    <div className="flex space">
-                        <h4>Select Size</h4>
-                        <h4 className="pink">Size Guide</h4>
+                    <p style={{fontSize:'20px'}}><b>Select Size</b></p>
+                    <div className="size-select">
+                        <button>XXS</button>
+                        <button>XS</button>
+                        <button>S</button>
+                        <button>M</button>
+                        <button>L</button>
+                        <button>XL</button>
+                        <button>XXL</button>
+                        <button>3XL</button>
+                        <button>4XL</button>
                     </div>
-                    <div className="flex space">
-                        <button className='size-btn'>XXS</button>
-                        <button className='size-btn'>XS</button>
-                        <button className='size-btn'>S</button>
-                        <button className='size-btn'>M</button>
-                        <button className='size-btn'>L</button>
-                        <button className='size-btn'>XL</button>
-                        <button className='size-btn'>XXL</button>
-                        <button className='size-btn'>3XL</button>
-                        <button className='size-btn'>4XL</button>
-                    </div>
-                    <p>Size out of stock? <b className='pink'>View Similar</b></p>
-                    <br />
-                    <p>Model is 6'0/185 cms and is wearing size m</p>
-                    <p>Cotton, Machine Wash</p>
-                    <hr />
-                    <br />
-                    <h4>Available Offers</h4>
-                    <div className="flex ofer">
-                        <img src="https://assets.tatacliq.com/medias/sys_master/images/27678831411230.png" />
+
+                    {state?.user?.role === "Buyer" ? (
+                        <button onClick={addToCart}
+                            style={{
+                                width: "70%",
+                                height: "50px",
+                                backgroundColor: "purple",
+                                fontSize: "22px",
+                                fontWeight: "bolder",
+                                marginTop:'30px',
+                                borderRadius:'10px',
+                                color:'white',
+                            }}
+                            
+                            // (singleProduct.id)
+                        >
+                            Add to cart
+                        </button>
+                    ) : null}
+
+                    {state?.user && state?.user?.role === "Seller" && (
                         <div>
-                            <p>10% Instant Discount on Kotak Bank Credit Cards only.</p>
-                            <p>Min Purchase: ₹2500
-                                |
-                                Max Discount: ₹1000
-                                <b className='blue'>more</b></p>
+                           
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style={{
+                                width: "70%",
+                                height: "50px",
+                                backgroundColor: "orangered",
+                                fontSize: "22px",
+                                fontWeight: "bolder",
+                                color: "white",
+                            }}>
+                                Update Product
+                            </button>
+
+
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Update Details</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                                        </div>
+                                        <div class="modal-body" style={{ color: 'black' }}>
+
+
+
+                                            <form onSubmit={handleSubmitProductUpdate}>
+                                                <div className="updateProdInputs" >
+                                                    <label><b>Image:</b></label><br/>
+                                                    <input
+                                                        type="text"
+                                                        onChange={changeProdDetails}
+                                                        name="image"
+                                                        placeholder="update image url"
+                                                        value={singleProduct.image}
+                                                        style={{width:'90%',height:'30px',border:'1px solid black',marginBottom:'15px'}}
+                                                    /><br />
+                                                    <label><b>Title:</b></label><br/>
+                                                    <input
+                                                        type="text"
+                                                        onChange={changeProdDetails}
+                                                        name="title"
+                                                        placeholder="update Title"
+                                                        value={singleProduct.title}
+                                                        style={{width:'90%',height:'30px',border:'1px solid black',marginBottom:'15px'}}
+                                                    /><br />
+                                                    <label><b>Price:</b></label><br/>
+                                                    <input
+                                                        type="text"
+                                                        onChange={changeProdDetails}
+                                                        name="price"
+                                                        placeholder="update price"
+                                                        value={singleProduct.price}
+                                                        style={{width:'90%',height:'30px',border:'1px solid black',marginBottom:'15px'}}
+                                                    /><br />
+                                                    <label><b>Category:</b></label><br/>
+                                                    <select
+                                                        value={singleProduct.category}
+                                                        onChange={changeProdDetailsCategory}
+                                                        style={{width:'90%',height:'30px',border:'1px solid black',marginBottom:'15px'}}
+                                                    >
+                                                        <option value="Other">Other</option>
+                                                        <option value="Mens">Mens</option>
+                                                        <option value="Womens">Womens</option>
+                                                        <option value="Kids">Kids</option>
+                                                        <option value="Fashion">Fashion</option>
+                                                        <option value="Accessories">Accessories</option>
+                                                    </select>
+                                                    <br />
+                                                    <button
+                                                    style={{width:'60%',height:'40px',backgroundColor:'purple',
+                                                color:'white',fontSize:'20px',fontWeight:'bold',margin:'30px'}}
+                                                    >
+                                                        Update product
+                                                        </button>
+                                                </div>
+
+
+                                            </form>
+
+                                        </div>
+                                        {/* <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                        </div> */}
+                                    </div>
+                                </div>
+                            </div>
+
+
+
                         </div>
-                    </div>
-                    <div className="flex ofer">
-                        <img src="https://assets.tatacliq.com/medias/sys_master/images/27678831280158.png" />
-                        <div>
-                            <p>15% off on ICICI Credit Cards only.</p>
-                            <p>Use Code:ICICIWEEKEND
-                                |
-                                Min Purchase :₹1500
-                                <b className='blue'>more</b></p>
-                        </div>
-                    </div>
-                    <div className="flex ofer">
-                        <img src="https://assets.tatacliq.com/medias/sys_master/images/27678831280158.png" />
-                        <div>
-                            <p>15% off on ICICI Netbanking</p>
-                            <p>Use Code: ICICINB
-                                |
-                                Min Purchase: ₹2000
-                                <b className='blue'>more</b></p>
-                        </div>
-                    </div>
-                    <div className="flex ofer">
-                        <img src="https://www.tatacliq.com/src/pdp/components/img/userOfferIcon.svg" />
-                        <div>
-                            <p>Use Code CLIQ500 get 10% off on min. Purchase of Rs.2500 |Max discount 500</p>
-                            <p>Use Code: CLIQ500
-                                |
-                                Min Purchase: ₹2500
-                                <b className='blue'>more</b></p>
-                        </div>
-                    </div>
-                    <br />
-                    <h4 className='pink'>See 5 More Offers</h4>
-                    <br />
-                    <hr />
-                    <br />
-                    <h4>Ship to</h4>
-                    <br />
-                    <div className=" pin">
-                        <p>Navi Mumbai,410206</p>
-                        <h4 className="pink">Change Pincode</h4>
-                    </div>
-
-                    <div className="flex delev">
-                        <img src="https://www.tatacliq.com/src/general/components/img/deliveryIcon.svg" />
-                        <p>Delivery by<b>13th Jul</b></p>
-                    </div>
-                    <div className="flex delev">
-                        <img src="https://www.tatacliq.com/src/general/components/img/cod.svg" />
-                        <p>Cash on Delivery | <b className='green'>Available</b></p>
-                    </div>
-                    <div className="flex delev">
-                        <img src="https://www.tatacliq.com/src/general/components/img/returnReplacementIcon.svg" />
-                        <p>
-                            30 Days Easy Return | <b className='pink'>Know More</b></p>
-                    </div>
-                    <br />
-
-                    <div className="pin">
-                        <h4>Sold By 1 Puma Sports India Pvt Ltd</h4>
-                    </div>
-                    <hr />
-                    <br />
-                    <h4>Product Details</h4>
-                    <p>Amaze everyone by sporting this black regular fit t-shirt from Puma. Tailored </p>
-                    <p>to sartorial perfection from premium quality fabric, it assures a soft and soothing touch</p>
-                    <br />
-                    <div className="mpi">
-                        <img src="https://www.tatacliq.com/src/pdp/components/img/moreProduct.svg" />
-                        <div>
-                            <h4>More Product Information</h4>
-                            <p>Manufacturing. Packaging & Import info</p>
-                        </div>
-                    </div>
-                    <br />
-                    <h4>From The Brand</h4>
-                    <br />
-                    <div className="store">
-                        <div className="puma">
-                            <img src="https://assets.tatacliq.com/medias/sys_master/images/31345385275422.png" />
-                            <p>Comfort and style are synonymous with Puma, making it one of </p>
-                            <p>leading brands of apparel and sports shoes in the world. You can </p>
-                            <p>your pick from the Puma apparels, footwear and accessories </p>
-                            <p>available here on Tata Cliq.</p>
-                            <button className='vs'>Visit Store</button>
-                        </div>
-                    </div>
-                    <br />
-                    <hr />
-                    <br />
-
-                    <div className="btns flex">
-                        <div>
-                            <i className="fa-solid fa-share-nodes" style={{ color: '#000000' }}></i>
-                        </div>
-                        <div>
-                            <i className="fa-regular fa-heart" style={{ color: '#000000' }}></i>
-                        </div>
-                        <button className='by-nw'>Buy Now</button>
-                        <button className='atb'>Add To Bag</button>
-
-                    </div>
-
-
+                    )}
                 </div>
             </div>
-
-            <div style={{ width: 800, marginLeft: 80 }}>
-                <h3>Style It With</h3>
-                <br />
-                <div className='flex space' >
-                    <h3 className='pink'>Recommended Combos</h3>
-                    <h3>Bottom Wear</h3>
-                    <h3>Outer Wear</h3>
-                    <h3>Footwear</h3>
-                    <h3>Bags & Wallets</h3>
-                </div>
-            </div>
-
-            <div className='extra-pro'>
-                <div className='gadget'>
-                    <img src="https://img.tatacliq.com/images/i7/252Wx374H/MP000000010977221_252Wx374H_202110211435581.jpeg" />
-                    <h4>Samsung</h4>
-                    <p>Samsung Galaxy Watch4 SM-</p>
-                    <p>R870NZKAINU 44nm</p>
-                    <div className="flex">
-                        <h4>₹12400</h4>
-                        <p><del>₹29999</del></p>
-                        <p className="green">59% off</p>
-                    </div>
-                    <button className='by-nw'>Add to Bag</button>
-                </div>
-                <div className='gadget'>
-                    <img src="https://img.tatacliq.com/images/i10/252Wx374H/MP000000016239600_252Wx374H_202303031238191.jpeg" />
-                    <h4>Samsung</h4>
-                    <p>Samsung Galaxy Watch4 SM-</p>
-                    <p>R870NZKAINU 44nm</p>
-                    <div className="flex">
-                        <h4>₹12400</h4>
-                        <p><del>₹29999</del></p>
-                        <p className="green">59% off</p>
-                    </div>
-                    <button className='by-nw'>Add to Bag</button>
-                </div>
-                <div className='gadget'>
-                    <img src="https://img.tatacliq.com/images/i7/252Wx374H/MP000000007140590_252Wx374H_202108032042161.jpeg" />
-                    <h4>Samsung</h4>
-                    <p>Samsung Galaxy Watch4 SM-</p>
-                    <p>R870NZKAINU 44nm</p>
-                    <div className="flex">
-                        <h4>₹12400</h4>
-                        <p><del>₹29999</del></p>
-                        <p className="green">59% off</p>
-                    </div>
-                    <button className='by-nw'>Add to Bag</button>
-                </div>
-            </div>
-
-            <div style={{ width: 120, margin: 'auto' }}>
-                <h3>Shop More</h3>
-            </div>
-
-            <div className="flex space" style={{ padding: 30 }}>
-                <h1>More From Puma</h1>
-                <button className='atb'>+ Follow Brand</button>
-            </div>
-
-            <div className="flex space" style={{ margin: 30, lineHeight: 1.5 }}>
-                <div className="tshirt">
-                    <img src="https://img.tatacliq.com/images/i11/437Wx649H/MP000000017554565_437Wx649H_202305151656271.jpeg" />
-                    <p>Puma Black Slim fit</p>
-                    <p>Printed Cotton Crew T-</p>
-                    <div className="flex">
-                        <h4>₹749</h4>
-                        <p><del>₹1599</del></p>
-                        <p className='green'>(53% off)</p>
-                    </div>
-                </div>
-                <div className="tshirt">
-                    <img src="https://img.tatacliq.com/images/i11/437Wx649H/MP000000017553767_437Wx649H_202305151626221.jpeg" />
-                    <p>Puma Black Slim fit</p>
-                    <p>Printed Cotton Crew T-</p>
-                    <div className="flex">
-                        <h4>₹749</h4>
-                        <p><del>₹1599</del></p>
-                        <p className='green'>(53% off)</p>
-                    </div>
-                </div>
-                <div className="tshirt">
-                    <img src="https://img.tatacliq.com/images/i10/437Wx649H/MP000000017311759_437Wx649H_202304210613231.jpeg" />
-                    <p>Puma Black Slim fit</p>
-                    <p>Printed Cotton Crew T-</p>
-                    <div className="flex">
-                        <h4>₹749</h4>
-                        <p><del>₹1599</del></p>
-                        <p className='green'>(53% off)</p>
-                    </div>
-                </div>
-                <div className="tshirt">
-                    <img src="https://img.tatacliq.com/images/i10/437Wx649H/MP000000016643506_437Wx649H_202303181347001.jpeg" />
-                    <p>Puma Black Slim fit</p>
-                    <p>Printed Cotton Crew T-</p>
-                    <div className="flex">
-                        <h4>₹749</h4>
-                        <p><del>₹1599</del></p>
-                        <p className='green'>(53% off)</p>
-                    </div>
-                </div>
-                <div className="tshirt">
-                    <img src="https://img.tatacliq.com/images/i10/437Wx649H/MP000000016728967_437Wx649H_202303181356291.jpeg" />
-                    <p>Puma Black Slim fit</p>
-                    <p>Printed Cotton Crew T-</p>
-                    <div className="flex">
-                        <h4>₹749</h4>
-                        <p><del>₹1599</del></p>
-                        <p className='green'>(53% off)</p>
-                    </div>
-                </div>
-
-            </div>
-            <div className="flex space" style={{ padding: 30 }}>
-                <h1>Similar Products</h1>
-                <button className='by-nw'>View All Products</button>
-            </div>
-
-            <div className="flex space" style={{ margin: 30, lineHeight: 1.5 }}>
-                <div className="tshirt">
-                    <img src="https://img.tatacliq.com/images/i12/437Wx649H/MP000000018165931_437Wx649H_202306300208461.jpeg" />
-                    <p>Puma Black Slim fit</p>
-                    <p>Printed Cotton Crew T-</p>
-                    <div className="flex">
-                        <h4>₹749</h4>
-                        <p><del>₹1599</del></p>
-                        <p className='green'>(53% off)</p>
-                    </div>
-                </div>
-                <div className="tshirt">
-                    <img src="https://img.tatacliq.com/images/i12/437Wx649H/MP000000018140463_437Wx649H_202306282038291.jpeg" />
-                    <p>Puma Black Slim fit</p>
-                    <p>Printed Cotton Crew T-</p>
-                    <div className="flex">
-                        <h4>₹749</h4>
-                        <p><del>₹1599</del></p>
-                        <p className='green'>(53% off)</p>
-                    </div>
-                </div>
-                <div className="tshirt">
-                    <img src="https://img.tatacliq.com/images/i12/437Wx649H/MP000000018140345_437Wx649H_202306282031391.jpeg" />
-                    <p>Puma Black Slim fit</p>
-                    <p>Printed Cotton Crew T-</p>
-                    <div className="flex">
-                        <h4>₹749</h4>
-                        <p><del>₹1599</del></p>
-                        <p className='green'>(53% off)</p>
-                    </div>
-                </div>
-                <div className="tshirt">
-                    <img src="https://img.tatacliq.com/images/i11/437Wx649H/MP000000018126759_437Wx649H_202306280109211.jpeg" />
-                    <p>Puma Black Slim fit</p>
-                    <p>Printed Cotton Crew T-</p>
-                    <div className="flex">
-                        <h4>₹749</h4>
-                        <p><del>₹1599</del></p>
-                        <p className='green'>(53% off)</p>
-                    </div>
-                </div>
-                <div className="tshirt">
-                    <img src="https://img.tatacliq.com/images/i11/437Wx649H/MP000000018112402_437Wx649H_202306252337291.jpeg" />
-                    <p>Puma Black Slim fit</p>
-                    <p>Printed Cotton Crew T-</p>
-                    <div className="flex">
-                        <h4>₹749</h4>
-                        <p><del>₹1599</del></p>
-                        <p className='green'>(53% off)</p>
-                    </div>
-                </div>
-
-            </div>
-            <div className="flex space" style={{ padding: 30 }}>
-                <h1>Frequently Bought Together</h1>
-                <button className='by-nw'>View All Products</button>
-            </div>
-
-            <div className="flex space" style={{ margin: 30, lineHeight: 1.5 }}>
-                <div className="tshirt">
-                    <img src="https://img.tatacliq.com/images/i8/437Wx649H/MP000000014802223_437Wx649H_202210091911471.jpeg" />
-                    <p>Puma Black Slim fit</p>
-                    <p>Printed Cotton Crew T-</p>
-                    <div className="flex">
-                        <h4>₹749</h4>
-                        <p><del>₹1599</del></p>
-                        <p className='green'>(53% off)</p>
-                    </div>
-                </div>
-                <div className="tshirt">
-                    <img src="https://img.tatacliq.com/images/i8/437Wx649H/MP000000015181541_437Wx649H_202211051605021.jpeg" />
-                    <p>Puma Black Slim fit</p>
-                    <p>Printed Cotton Crew T-</p>
-                    <div className="flex">
-                        <h4>₹749</h4>
-                        <p><del>₹1599</del></p>
-                        <p className='green'>(53% off)</p>
-                    </div>
-                </div>
-                <div className="tshirt">
-                    <img src="https://img.tatacliq.com/images/i11/437Wx649H/MP000000017554565_437Wx649H_202305151656271.jpeg" />
-                    <p>Puma Black Slim fit</p>
-                    <p>Printed Cotton Crew T-</p>
-                    <div className="flex">
-                        <h4>₹749</h4>
-                        <p><del>₹1599</del></p>
-                        <p className='green'>(53% off)</p>
-                    </div>
-                </div>
-                <div className="tshirt">
-                    <img src="https://img.tatacliq.com/images/i8/437Wx649H/MP000000014865274_437Wx649H_202210142127351.jpeg" />
-                    <p>Puma Black Slim fit</p>
-                    <p>Printed Cotton Crew T-</p>
-                    <div className="flex">
-                        <h4>₹749</h4>
-                        <p><del>₹1599</del></p>
-                        <p className='green'>(53% off)</p>
-                    </div>
-                </div>
-                <div className="tshirt">
-                    <img src="https://img.tatacliq.com/images/i8/437Wx649H/MP000000015212785_437Wx649H_202211062026341.jpeg" />
-                    <p>Puma Black Slim fit</p>
-                    <p>Printed Cotton Crew T-</p>
-                    <div className="flex">
-                        <h4>₹749</h4>
-                        <p><del>₹1599</del></p>
-                        <p className='green'>(53% off)</p>
-                    </div>
-                </div>
-
-            </div>
-
-
-
         </div>
-    )
-}
+    );
+};
 
-export default SingleProduct
+export default SingleProduct;

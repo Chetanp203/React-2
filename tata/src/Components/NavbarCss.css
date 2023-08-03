@@ -70,7 +70,7 @@ padding: 10px;
     align-items: center;
 }
 .nav-in-1 h5{
-    padding-right: 240px;
+    padding-right: 200px;
     
 }
 .nav-in-1 ul{
@@ -82,6 +82,11 @@ padding: 10px;
     padding: 10px;
    
 
+}
+.reg input{
+    width: 80%;
+    border: 1px solid #ccc;
+    height: 30px;
 }
 
 .nav-in-2{

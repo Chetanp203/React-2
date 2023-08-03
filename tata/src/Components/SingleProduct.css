@@ -189,3 +189,10 @@ padding: 10px;
     width: 100%;
     border-radius: 7px;
 }
+
+.size-select button{
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 10px;
+    margin-right: 7px;
+}

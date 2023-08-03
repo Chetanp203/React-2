@@ -16,12 +16,17 @@ import Gadgets from './Components/Gadgets'
 import Jewellery from './Components/Jewellery'
 import Acceccories from './Components/Acceccories'
 import Checkout from './Components/Checkout'
+import AllProducts from './Components/AllProducts'
+import AddProducts from './Components/AddProducts'
+
 
 export const App = () => {
   return (
     <div>
       <Navbar/>
       <Routes>
+        <Route exact path='add-products' element={<AddProducts/>}/>
+        <Route exact path='all-products' element={<AllProducts/>}/>
         <Route exact path='checkout' element={<Checkout/>}/>
         <Route exact path='accessories' element={<Acceccories/>}/>
         <Route exact path='jewellery' element={<Jewellery/>}/>
@@ -32,7 +37,7 @@ export const App = () => {
         <Route exact path='/womenclothing' element={<WomenClothing/>}/>
         <Route exact path='/bag' element={<Bag/>} />
         <Route exact path='/profile' element={<Profile/>}/>
-        <Route exact path='/singleproduct' element={<SingleProduct/>}/>
+        <Route exact path='/singleproduct/:id' element={<SingleProduct/>}/>
         <Route exact path='/menstshirt' element={<MensTshirt/>}/>
         <Route exact path='/menswear' element={<MensWear/>}/>
         <Route path='/' element={<Home/>}/>
