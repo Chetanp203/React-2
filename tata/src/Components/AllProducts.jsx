@@ -21,64 +21,48 @@ const AllProducts = () => {
     }, []);
 
 
-    // const { state,login } = useContext(AuthContext)
-    // const [productPresent, setProductPresent] = useState(false);
-    // const [products, setProducts] = useState();
-    // const [isUserLoggedIn, setIsUserLoggedIn]=useState(false);
-    // const[currentUserEmail, setCurrentUserEmail]=useState("");
-    // const {id} = useParams();
-    // const router = useNavigate();
-    // useEffect(() => {
-    //     console.log(products,"-productsadd")
+    // function addCart() {
+    //     if (isUserLoggedIn) {
+    //         const users = JSON.parse(localStorage.getItem("Users"));
 
-    //     const productsFromDB = JSON.parse(localStorage.getItem("Products"))
-    //     if (productsFromDB) {
-    //         setProductPresent(true);
-    //         setProducts(productsFromDB);
+    //         for (var i = 0; i < users.length; i++) {
+    //             if (users[i].email == currentUserEmail) {
+    //                 users[i].cart?.push(products);
+    //                 localStorage.setItem("Users", JSON.stringify(users));
+    //                 break;
+    //             }
+    //         }
+    //         alert("Added to cart")
+    //         route("/product-from-backend")
     //     } else {
-    //         setProductPresent(false);
+    //         alert("Login to add items to cart..")
     //     }
-    // }, [])
 
-    // useEffect(() => {
-    //     if (id && products.length) {
-    //         const result = products.find((product) => product.id == id);
-    //         setProducts(result)
-    //     }
-    // }, [id, products])
-
-    // const redirect = (id) => {
-    //     router(`/singleproduct/${id}`)
     // }
 
-    // useEffect(() => {
-    //     var user = JSON.parse(localStorage.getItem("Current-user"));
-    //     console.log(user, "user")
-    //     if (user) {
-    //         setIsUserLoggedIn(true);
-    //         setCurrentUserEmail(user.email)
-    //     }
-    // }, [])
+    const addCart = (id) => {
+        const regUser = JSON.parse(localStorage.getItem("Users"));
 
+        if (state?.user) {
+            for (let i = 0; i < regUser.length; i++) {
+                if (regUser[i].email === state.user.email) {
+                    const duplicate = regUser[i].cart.find((e) => e.id === id);
 
-    function addCart() {
-        if (isUserLoggedIn) {
-            const users = JSON.parse(localStorage.getItem("Users"));
-
-            for (var i = 0; i < users.length; i++) {
-                if (users[i].email == currentUserEmail) {
-                    users[i].cart?.push(products);
-                    localStorage.setItem("Users", JSON.stringify(users));
-                    break;
+                    // console.log(duplicate);
+                    // Do not add Duplicate items
+                    if (regUser[i].cart.length && duplicate) {
+                        toast("product already added");
+                        route("/cart");
+                    } else {
+                        regUser[i].cart.push(singleProduct);
+                        localStorage.setItem("Users", JSON.stringify(regUser));
+                        alert("product added");
+                        route("/all-products");
+                    }
                 }
             }
-            alert("Added to cart")
-            route("/product-from-backend")
-        } else {
-            alert("Login to add items to cart..")
         }
-
-    }
+    };
 
 
     return (
