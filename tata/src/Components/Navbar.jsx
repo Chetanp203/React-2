@@ -3,23 +3,25 @@ import './NavbarCss.css'
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../Context/Auth.context';
+import { toast } from 'react-hot-toast';
+import axios from 'axios';
 
 
 export const Navbar = () => {
-  const { state, login ,logout} = useContext(AuthContext);
-  console.log(state,"-state")
-  const [userData, setUserData] = useState({name:"", email:"",password:"", role:"Buyer",cart:[]});
-  const router = useNavigate();
-  console.log(userData,"-userdata");
-  const [user, setUser] = useState();
+//   const { state, login ,logout} = useContext(AuthContext);
+//   console.log(state,"-state")
+//   const [userData, setUserData] = useState({name:"", email:"",password:"", role:"Buyer",cart:[]});
+//   const router = useNavigate();
+//   console.log(userData,"-userdata");
+//   const [user, setUser] = useState();
 
-  useEffect(()=> {
-     if(state?.user){
-      setUser(state?.user)
-     }else{
-      setUser({});
-     }
-  },[state])
+//   useEffect(()=> {
+//      if(state?.user){
+//       setUser(state?.user)
+//      }else{
+//       setUser({});
+//      }
+//   },[state])
 
 
   function open() {
@@ -58,65 +60,127 @@ export const Navbar = () => {
 
  
 
-  const handleChange= (event) => {
-     setUserData({...userData, [event.target.name] : event.target.value})
-  }
-  const handleSelectChange= (event) => {
-    const value = event.target.value
-    setUserData({...userData,["role"]:value})
- }
+//   const handleChange= (event) => {
+//      setUserData({...userData, [event.target.name] : event.target.value})
+//   }
+//   const handleSelectChange= (event) => {
+//     const value = event.target.value
+//     setUserData({...userData,["role"]:value})
+//  }
 
-//  role: event.target.value
+// //  role: event.target.value
 
-  const handleSubmit = (event) => {
-      event.preventDefault();
-      if(userData.name && userData.email && userData.password){
-          const array = JSON.parse(localStorage.getItem("Users")) || [];
+//   const handleSubmit = (event) => {
+//       event.preventDefault();
+//       if(userData.name && userData.email && userData.password){
+//           const array = JSON.parse(localStorage.getItem("Users")) || [];
 
-          const userDataObj = {
-              name: userData.name,
-              email: userData.email,
-              password: userData.password,
-              cart:[],
-              role: userData.role,
-          };
-          array.push(userDataObj);
-          localStorage.setItem("Users", JSON.stringify(array));
-          alert("Registration Successfull!!!")
-          setUserData({name:"", email:"",password:""})
-          // router('/login')
-      } else {
-          alert("All fields mandatory")
-      }
-  }
+//           const userDataObj = {
+//               name: userData.name,
+//               email: userData.email,
+//               password: userData.password,
+//               cart:[],
+//               role: userData.role,
+//           };
+//           array.push(userDataObj);
+//           localStorage.setItem("Users", JSON.stringify(array));
+//           alert("Registration Successfull!!!")
+//           setUserData({name:"", email:"",password:""})
+//           // router('/login')
+//       } else {
+//           alert("All fields mandatory")
+//       }
+//   }
 
-  const handleloginSubmit = (event) => {
+//   const handleloginSubmit = (event) => {
+//     event.preventDefault();
+//     if (userData.email && userData.password) {
+//         const users = JSON.parse(localStorage.getItem("Users")); // accessed localstorage
+//         console.log(users,"-users")
+//         var flag = false;
+//         for (var i = 0; i < users.length; i++) {
+//             if (users[i].email == userData.email && users[i].password == userData.password) {
+//                 flag = true; // re-assign
+//                 login(users[i]);
+
+//                 alert("Login successfull.");
+//                 setUserData({ email: "", password: "" })
+//                 router('/');
+//                 break;
+//             }
+//         }
+
+//         if (flag == false) {
+//             return alert("Please check credentails.")
+//         }
+
+//     } else {
+//         alert("All fields are mandatory")
+//     }
+// }
+
+const [userData,setUserData]= useState({name:"", email:"", password:"",confirmPassword:"",role:"Buyer"})
+    const {state,logout,dispatch} = useContext(AuthContext);
+    const router = useNavigate();
+
+    const handleChange = (event)=>{
+        setUserData({...userData,[event.target.name]:event.target.value})
+    }
+
+    const handleSelectChange =(event)=>{
+        setUserData({...userData,"role": event.target.value})
+    }
+
+    // console.log(userData,"-userdata")
+
+    const handleRegSubmit =async (event)=>{
+        event.preventDefault();
+        if(userData.name && userData.email && userData.password && userData.confirmPassword && userData.role){
+           if (userData.password === userData.confirmPassword){
+              const response = await axios.post("http://localhost:8003/register",{userData});
+              if(response.data.success){
+                // router("/login")
+                toast.success(response.data.message)
+              }else{
+                toast.error(response.data.message)
+              }
+           }else{
+            toast.error("Passwords didn't match..")
+           }
+        }else{
+            toast.error("All fields are mandatory")
+        }
+    }
+
+    
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (userData.email && userData.password) {
-        const users = JSON.parse(localStorage.getItem("Users")); // accessed localstorage
-        console.log(users,"-users")
-        var flag = false;
-        for (var i = 0; i < users.length; i++) {
-            if (users[i].email == userData.email && users[i].password == userData.password) {
-                flag = true; // re-assign
-                login(users[i]);
-
-                alert("Login successfull.");
-                setUserData({ email: "", password: "" })
-                router('/');
-                break;
-            }
-        }
-
-        if (flag == false) {
-            return alert("Please check credentails.")
-        }
-
+      const response = await axios.post("http://localhost:8003/login", {
+        userData,
+      });
+      if (response.data.success) {
+        dispatch({
+          type: "login",
+          payload: response.data.user,
+        });
+        localStorage.setItem("token", JSON.stringify(response.data.token));
+        setUserData({ email: "", password: "" });
+        router("/");
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message);
+      }
     } else {
-        alert("All fields are mandatory")
+      toast.error("All fields are mandatory");
     }
-}
+  };
 
+    useEffect(()=>{
+      if(state?.user?.name){
+        router("/")
+      }
+      },[state])
 
 
 
@@ -130,10 +194,10 @@ export const Navbar = () => {
           <ul>
             <li onClick={()=>router('/all-products')}>All Products</li>
             {/* <li onClick={()=>router('/add-products')}>Add Products</li> */}
-            {user?.role == "Seller" && <li onClick={()=> router('/add-products')} style={{cursor:'pointer',marginLeft:'30px'}} >Add Product</li>}
+            {state?.user?.role == "Seller" && <li onClick={()=> router('/add-products')} style={{cursor:'pointer',marginLeft:'30px'}} >Add Product</li>}
             <li>CLiQ Cash</li>
             {/* <li>Gift Card</li> */}
-            <li style={{marginLeft:'10px',cursor:'pointer'}} onClick={() => router("/profile")}>Profile-{user?.name}</li>
+            <li style={{marginLeft:'10px',cursor:'pointer'}} onClick={() => router("/profile")}>Profile-{state?.user?.name}</li>
             {/* <li>Sign in/Sign Up</li> */}
             <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
               <div class="modal-dialog modal-dialog-centered">
@@ -145,13 +209,13 @@ export const Navbar = () => {
 
                   {/* form */}
 
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={handleRegSubmit}>
                   <div className='reg' style={{ color: 'black', width: '60%', margin: 'auto', textAlign: "center" }}>
                     <h1 style={{ color: 'black', fontSize: '20px', fontWeight: 'bold' }}>Register</h1><br />
                     <label>Name:</label><br />
-                    <input type="text" onChange={handleChange} name="name"/><br />
+                    <input type="text" onChange={handleChange} name="name" value={userData.name}/><br />
                     <label>Email:</label><br />
-                    <input type="text" onChange={handleChange} name="email"/><br />
+                    <input type="text" onChange={handleChange} name="email" value={userData.email}/><br />
                     <br />
                     <select onChange={handleSelectChange} style={{ width: '80%', height: '40px',border:'1px solid #ccc' }}>
                       <option value="Buyer">Buyer</option>
@@ -159,7 +223,9 @@ export const Navbar = () => {
                     </select>
                     <br />
                     <label>Password:</label><br />
-                    <input type="text" onChange={handleChange} name="password"/><br />
+                    <input type="password" onChange={handleChange} name="password" value={userData.password}/><br />
+                    <label>Password:</label><br />
+                    <input type="password" onChange={handleChange} name="confirmPassword" value={userData.confirmPassword}/><br />
 
                     <input data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" type="submit" value="Register" style={{ width: '80%', height: '40px', backgroundColor: 'red', border: 'none', borderRadius: '5px', color: 'white', marginTop: '20px' }} /><br />
                   </div>
@@ -188,15 +254,15 @@ export const Navbar = () => {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style={{border:'1px solid black',padding:'5px'}}>X</button>
                   </div>
 
-                   <form onSubmit={handleloginSubmit}>
+                   <form onSubmit={handleSubmit}>
                   <div className='reg' style={{ color: 'black', width: '60%', margin: 'auto', textAlign: "center" }}>
                     <h1 style={{ color: 'black', fontSize: '20px', fontWeight: 'bold' }}>Login</h1><br />
                     
                     <label>Email:</label><br />
-                    <input type="text" name='email' onChange={handleChange} /><br />
+                    <input type="text" name='email' onChange={handleChange} value={userData.email}/><br />
                     <br />
                     <label>Password:</label><br />
-                    <input type="text" name='password' onChange={handleChange} /><br />
+                    <input type="text" name='password' onChange={handleChange} value={userData.password}/><br />
 
                     <input type="submit" value="Login" style={{ width: '80%', height: '40px', backgroundColor: 'red', border: 'none', borderRadius: '5px', color: 'white', marginTop: '20px' }} /><br />
                   </div>
@@ -215,7 +281,7 @@ export const Navbar = () => {
             <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal"
               style={{ height: '10px', backgroundColor: 'black', fontSize: '16px', paddingTop: '0px' }}>SignIn/SignUp</button>
 
-              <li onClick={logout} onClick={()=> router("/")}>Logout</li>
+              <li onClick={logout} >Logout</li>
 
 
           </ul>

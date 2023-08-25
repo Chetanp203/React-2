@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Navbar from './Components/Navbar'
 import {Routes,Route} from 'react-router-dom'
 import Home from './Components/Home'
@@ -18,9 +18,12 @@ import Acceccories from './Components/Acceccories'
 import Checkout from './Components/Checkout'
 import AllProducts from './Components/AllProducts'
 import AddProducts from './Components/AddProducts'
+import { AuthContext } from './Context/Auth.context'
 
 
 export const App = () => {
+  const {state}= useContext(AuthContext);
+  console.log(state?.user,"user here")
   return (
     <div>
       <Navbar/>
