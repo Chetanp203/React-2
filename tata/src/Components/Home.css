@@ -77,17 +77,17 @@
     width: 100%;
     
 }
-.feature{
-    width: 70%;
+#feature{
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
-    padding-left: 200px;
     justify-content: space-around;
+    text-align: center;
 }
-.feature div{
+.f-div{
     width: 450px;
     margin-bottom: 30px;
 }
 .feature div img{
-    width: 100%;
+    width: 90%;
 }

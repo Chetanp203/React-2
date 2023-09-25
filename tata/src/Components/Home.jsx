@@ -142,23 +142,23 @@ export const Home = () => {
         <img src="https://assets.tatacliq.com/medias/sys_master/images/47520344408094.jpg"  />
       </div>
 
-      <div className="feature">
-        <div>
+      <div id="feature">
+        <div className='f-div'>
           <img src="https://assets.tatacliq.com/medias/sys_master/images/47596866895902.jpg" />
         </div>
-        <div>
+        <div className='f-div'>
           <img src="https://assets.tatacliq.com/medias/sys_master/images/47596867223582.jpg" />
         </div>
-        <div>
+        <div className='f-div'>
           <img src="https://assets.tatacliq.com/medias/sys_master/images/47596867944478.jpg" />
         </div>
-        <div>
+        <div className='f-div'>
           <img src="https://assets.tatacliq.com/medias/sys_master/images/47596866961438.jpg" />
         </div>
-        <div>
+        <div className='f-div'>
           <img src="https://assets.tatacliq.com/medias/sys_master/images/47596854804510.jpg" />
         </div>
-        <div>
+        <div className='f-div'>
           <img src="https://assets.tatacliq.com/medias/sys_master/images/47596854870046.jpg" />
         </div>
       </div>

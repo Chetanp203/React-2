@@ -83,7 +83,7 @@ const AllProducts = () => {
                             <div
                                 key={item.id}
                                 style={{
-                                    width: "20%",
+                                    width: "15%",
                                     // height: "350px",
                                     border: "2px solid grey",
                                     boxShadow: "2px 2px 15px grey",
@@ -96,13 +96,16 @@ const AllProducts = () => {
                             >
                                 
                                 <img
-                                    width="100%"
-                                    height="100px"
+                                    style={{width:"100%",
+                                    height:"250px"}}
                                     src={item.image}
                                     alt="broken image"
                                 />
                                 
-                                <p style={{ fontSize: '25px' }}><b>{item.title}</b></p>
+                                <div style={{height:"65px"}}>
+                                <p style={{ fontSize: '23px' }}><b>{item.title}</b></p>
+                                </div>
+
                                 <h3>Category :{item.category}</h3>
                                 <p style={{ fontSize: '25px' }}>Rs.{item.price}</p>
 

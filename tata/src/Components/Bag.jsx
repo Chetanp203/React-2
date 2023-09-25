@@ -13,7 +13,7 @@ const Bag = () => {
   // console.log(state);
 
   useEffect(() => {
-    const currentuser = JSON.parse(localStorage.getItem("Current-user"));
+    const currentuser = JSON.parse(localStorage.getItem("current-user"));
 
     if (state?.user?.role === "Seller") {
       route("/");
@@ -21,7 +21,7 @@ const Bag = () => {
   }, []);
 
   useEffect(() => {
-    const currentuser = JSON.parse(localStorage.getItem("Current-user"));
+    const currentuser = JSON.parse(localStorage.getItem("current-user"));
     const regusers = JSON.parse(localStorage.getItem("Users"));
 
     if (state?.user && state?.user?.role === "Buyer" ) {
@@ -45,7 +45,7 @@ const Bag = () => {
   }, [cartProd]);
 
   const removeSingleProduct = (id) => {
-    const currentuser = JSON.parse(localStorage.getItem("Current-user"));
+    const currentuser = JSON.parse(localStorage.getItem("current-user"));
     const regusers = JSON.parse(localStorage.getItem("Users"));
     const filterItem = cartProd.filter((item) => item.id != id);
 
@@ -63,7 +63,7 @@ const Bag = () => {
   };
 
   const checkOut = () => {
-    const currentuser = JSON.parse(localStorage.getItem("Current-user"));
+    const currentuser = JSON.parse(localStorage.getItem("current-user"));
     const regusers = JSON.parse(localStorage.getItem("Users"));
 
     if (state?.user && state?.user?.role === "Buyer") {
@@ -132,7 +132,7 @@ const Bag = () => {
 
 
 
-                        <button>Continue Shopping</button>
+                        <button onClick={()=>route('/')}>Continue Shopping</button>
 
 
 

@@ -3,8 +3,6 @@ import './NavbarCss.css'
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../Context/Auth.context';
-import { toast } from 'react-hot-toast';
-import axios from 'axios';
 
 
 export const Navbar = () => {
@@ -120,7 +118,7 @@ export const Navbar = () => {
 // }
 
 const [userData,setUserData]= useState({name:"", email:"", password:"",confirmPassword:"",role:"Buyer"})
-    const {state,logout,dispatch} = useContext(AuthContext);
+    const {state,logout,login} = useContext(AuthContext);
     const router = useNavigate();
 
     const handleChange = (event)=>{
@@ -133,49 +131,90 @@ const [userData,setUserData]= useState({name:"", email:"", password:"",confirmPa
 
     // console.log(userData,"-userdata")
 
-    const handleRegSubmit =async (event)=>{
-        event.preventDefault();
-        if(userData.name && userData.email && userData.password && userData.confirmPassword && userData.role){
-           if (userData.password === userData.confirmPassword){
-              const response = await axios.post("http://localhost:8003/register",{userData});
-              if(response.data.success){
-                // router("/login")
-                toast.success(response.data.message)
-              }else{
-                toast.error(response.data.message)
-              }
-           }else{
-            toast.error("Passwords didn't match..")
-           }
-        }else{
-            toast.error("All fields are mandatory")
-        }
-    }
+  //   const handleRegSubmit =async (event)=>{
+  //       event.preventDefault();
+  //       if(userData.name && userData.email && userData.password && userData.confirmPassword && userData.role){
+  //          if (userData.password === userData.confirmPassword){
+  //             const response = await axios.post("http://localhost:8003/register",{userData});
+  //             if(response.data.success){
+  //               // router("/login")
+  //               toast.success(response.data.message)
+  //             }else{
+  //               toast.error(response.data.message)
+  //             }
+  //          }else{
+  //           toast.error("Passwords didn't match..")
+  //          }
+  //       }else{
+  //           toast.error("All fields are mandatory")
+  //       }
+  //   }
 
     
-  const handleSubmit = async (event) => {
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   if (userData.email && userData.password) {
+  //     const response = await axios.post("http://localhost:8003/login", {
+  //       userData,
+  //     });
+  //     if (response.data.success) {
+  //       dispatch({
+  //         type: "login",
+  //         payload: response.data.user,
+  //       });
+  //       localStorage.setItem("token", JSON.stringify(response.data.token));
+  //       setUserData({ email: "", password: "" });
+  //       router("/");
+  //       toast.success(response.data.message);
+  //     } else {
+  //       toast.error(response.data.message);
+  //     }
+  //   } else {
+  //     toast.error("All fields are mandatory");
+  //   }
+  // };
+
+  const handleloginSubmit = (event) => {
     event.preventDefault();
     if (userData.email && userData.password) {
-      const response = await axios.post("http://localhost:8003/login", {
-        userData,
-      });
-      if (response.data.success) {
-        dispatch({
-          type: "login",
-          payload: response.data.user,
-        });
-        localStorage.setItem("token", JSON.stringify(response.data.token));
-        setUserData({ email: "", password: "" });
-        router("/");
-        toast.success(response.data.message);
-      } else {
-        toast.error(response.data.message);
-      }
-    } else {
-      toast.error("All fields are mandatory");
-    }
-  };
+        const users = JSON.parse(localStorage.getItem("Users")); // accessed localstorage
+        console.log(users,"-users")
+        var flag = false;
+        for (var i = 0; i < users.length; i++) {
+            if (users[i].email == userData.email && users[i].password == userData.password) {
+                flag = true; // re-assign
+                login(users[i]);
 
+                alert("Login successfull.");
+                setUserData({ email: "", password: "" })
+                router('/');
+                break;
+            }
+        }
+      }
+    }
+      const handleSubmit = (event) => {
+        event.preventDefault();
+        if(userData.name && userData.email && userData.password && userData.role){
+            const array = JSON.parse(localStorage.getItem("Users")) || [];
+  
+            const userDataObj = {
+                name: userData.name,
+                email: userData.email,
+                password: userData.password,
+                cart:[],
+                role: userData.role,
+            };
+            array.push(userDataObj);
+            localStorage.setItem("Users", JSON.stringify(array));
+            alert("Registration Successfull!!!")
+            setUserData({name:"", email:"",password:""})
+            // router('/login')
+        } else {
+            alert("All fields mandatory")
+        }
+    }
+  
     useEffect(()=>{
       if(state?.user?.name){
         router("/")
@@ -197,7 +236,7 @@ const [userData,setUserData]= useState({name:"", email:"", password:"",confirmPa
             {state?.user?.role == "Seller" && <li onClick={()=> router('/add-products')} style={{cursor:'pointer',marginLeft:'30px'}} >Add Product</li>}
             <li>CLiQ Cash</li>
             {/* <li>Gift Card</li> */}
-            <li style={{marginLeft:'10px',cursor:'pointer'}} onClick={() => router("/profile")}>Profile-{state?.user?.name}</li>
+            {state?.user &&<li style={{marginLeft:'10px',cursor:'pointer'}} onClick={() => router("/profile")}>Profile-{state?.user?.name}</li>}
             {/* <li>Sign in/Sign Up</li> */}
             <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
               <div class="modal-dialog modal-dialog-centered">
@@ -209,7 +248,7 @@ const [userData,setUserData]= useState({name:"", email:"", password:"",confirmPa
 
                   {/* form */}
 
-                  <form onSubmit={handleRegSubmit}>
+                  <form onSubmit={handleSubmit}>
                   <div className='reg' style={{ color: 'black', width: '60%', margin: 'auto', textAlign: "center" }}>
                     <h1 style={{ color: 'black', fontSize: '20px', fontWeight: 'bold' }}>Register</h1><br />
                     <label>Name:</label><br />
@@ -254,7 +293,7 @@ const [userData,setUserData]= useState({name:"", email:"", password:"",confirmPa
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style={{border:'1px solid black',padding:'5px'}}>X</button>
                   </div>
 
-                   <form onSubmit={handleSubmit}>
+                   <form onSubmit={handleloginSubmit}>
                   <div className='reg' style={{ color: 'black', width: '60%', margin: 'auto', textAlign: "center" }}>
                     <h1 style={{ color: 'black', fontSize: '20px', fontWeight: 'bold' }}>Login</h1><br />
                     
@@ -278,10 +317,10 @@ const [userData,setUserData]= useState({name:"", email:"", password:"",confirmPa
                 </div>
               </div>
             </div>
-            <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal"
-              style={{ height: '10px', backgroundColor: 'black', fontSize: '16px', paddingTop: '0px' }}>SignIn/SignUp</button>
+           {!state?.user && <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal"
+              style={{ height: '10px', backgroundColor: 'black', fontSize: '16px', paddingTop: '0px' }}>SignIn/SignUp</button>}
 
-              <li onClick={logout} >Logout</li>
+              {state?.user && <li onClick={logout} >Logout</li> }
 
 
           </ul>

@@ -38,9 +38,30 @@ const AuthProvider = ({children}) => {
     //     getCurrentUserData();
     // },[])
 
+    const login =(userDetails)=>{
+        localStorage.setItem("current-user",JSON.stringify(userDetails));
+        dispatch({
+            type:"login",
+            payload:userDetails,
+        })
+     }
 
+     const logout=()=>{
+        localStorage.removeItem("current-user");
+        dispatch({
+            type:"logout"
+        })
+     }
+
+     useEffect(()=>{
+        const userDetails = JSON.parse(localStorage.getItem("current-user"))
+        dispatch({
+            type:"login",
+            payload:userDetails,
+        })
+    },[])
    return (
-    <AuthContext.Provider value={{state, dispatch}}>
+    <AuthContext.Provider value={{state, login,logout}}>
         {children}
 
     </AuthContext.Provider>

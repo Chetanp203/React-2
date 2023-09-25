@@ -106,13 +106,13 @@ const AddProducts = () => {
   //         }
   // }, [])
   return (
-    <div>
-      <h1>AddProducts</h1>
-      <form onSubmit={handleProductSubmit} style={{ border: '1px solid black', fontSize: '30px', padding: '50px', margin: 'auto', border: '1px solid #ccc', width: '30%' }}>
+    <div style={{paddingBottom:"30px"}}>
+      <p style={{fontSize:"25px",fontWeight:"bold",textAlign:"center"}}>Add Product</p>
+      <form onSubmit={handleProductSubmit} style={{ border: '2px solid black', fontSize: '18px', padding: '30px', margin: 'auto', border: '2px solid #ccc', width: '20%'}}>
         <label >Product Name:</label><br />
-        <input value={prodDetails.title} type="text" name='title' onChange={HandleProdDetails} style={{ width: '250px', height: '40px', border: '1px solid #ccc' }} /><br />
+        <input value={prodDetails.title} type="text" name='title' onChange={HandleProdDetails} style={{ width: '200px', height: '40px', border: '1px solid #ccc' }} /><br />
         <label>Product Category:</label><br />
-        <select onChange={HandleCategory} style={{ width: '250px', height: '40px', border: '1px solid #ccc' }}>
+        <select onChange={HandleCategory} style={{ width: '200px', height: '40px', border: '1px solid #ccc' }}>
           <option value="Others">Others</option>
           <option value="Mens">Mens</option>
           <option value="Womens">Womens</option>
@@ -124,10 +124,10 @@ const AddProducts = () => {
         <br />
 
         <label >Product Price:</label><br />
-        <input value={prodDetails.price} type="number" name='price' onChange={HandleProdDetails} style={{ width: '250px', height: '40px', border: '1px solid #ccc' }} /><br />
+        <input value={prodDetails.price} type="number" name='price' onChange={HandleProdDetails} style={{ width: '200px', height: '40px', border: '1px solid #ccc' }} /><br />
         <label >Product Image: </label><br />
-        <input value={prodDetails.image} type="text" name='image' onChange={HandleProdDetails} style={{ width: '250px', height: '40px', border: '1px solid #ccc' }} /><br />
-        <input type="submit" value="Add Product" style={{ width: '250px', height: '40px', backgroundColor: 'purple', border: 'none', borderRadius: '5px', color: 'white', marginTop: '20px', border: '1px solid #ccc' }} /><br />
+        <input value={prodDetails.image} type="text" name='image' onChange={HandleProdDetails} style={{ width: '200px', height: '40px', border: '1px solid #ccc' }} /><br />
+        <input type="submit" value="Add Product" style={{ width: '200px', height: '40px', backgroundColor: 'black',color:"white", border: 'none', borderRadius: '5px', color: 'white', marginTop: '20px', border: '1px solid #ccc' }} /><br />
 
       </form>
     </div>

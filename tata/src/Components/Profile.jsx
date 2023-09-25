@@ -10,10 +10,14 @@ const Profile = () => {
     const [userData, setUserData] = useState({});
     const router = useNavigate();
     
-
+   useEffect(()=>{
+    if (!state?.user?.name){
+      router('/')
+    }
+   },[])
 
     useEffect(() => {
-        const currentuser = JSON.parse(localStorage.getItem("Current-user"));
+        const currentuser = JSON.parse(localStorage.getItem("current-user"));
         if (!currentuser) {
             router("/login")
         }
@@ -33,7 +37,7 @@ const Profile = () => {
 
     function handleSubmit(event) {
         event.preventDefault();
-        const currentuser = JSON.parse(localStorage.getItem("Current-user"));
+        const currentuser = JSON.parse(localStorage.getItem("current-user"));
         const allUsers = JSON.parse(localStorage.getItem("Users"));
         for (var i = 0; i < allUsers.length; i++) {
             if (allUsers[i].email == currentuser.email && allUsers[i].password == currentuser.password) {
@@ -46,7 +50,7 @@ const Profile = () => {
             }
         }
         login(currentuser)
-        localStorage.setItem("Current-user", JSON.stringify(currentuser));
+        localStorage.setItem("current-user", JSON.stringify(currentuser));
         localStorage.setItem("Users", JSON.stringify(allUsers));
         setUserData({});
         alert("Profile Updated");
